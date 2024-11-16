@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LibraryManagmentSystem.Data\LibraryManagmentSystem.Data.csproj" />
     <ProjectReference Include="..\LibraryManagmentSystem.Domain\LibraryManagmentSystem.Domain.csproj" />
   </ItemGroup>
-
+	
 </Project>

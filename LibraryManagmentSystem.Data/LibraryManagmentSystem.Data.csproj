@@ -16,7 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LibraryManagmentSystem.Core\LibraryManagmentSystem.Core.csproj" />
     <ProjectReference Include="..\LibraryManagmentSystem.Domain\LibraryManagmentSystem.Domain.csproj" />
   </ItemGroup>
+	
 
 </Project>

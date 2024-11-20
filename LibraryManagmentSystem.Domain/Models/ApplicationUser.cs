@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using LibraryManagmentSystem.Domain.Models.Authentication;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace LibraryManagementSystem.Domain.Models
@@ -15,5 +16,7 @@ namespace LibraryManagementSystem.Domain.Models
 
         public ICollection<Borrowing> Borrowings { get; set; }  // Every user can borrow many books
         public ICollection<Fine> Fines { get; set; }
+
+        public List<RefreshToken>? RefreshTokens { get; set; }
     }
 }

@@ -21,8 +21,4 @@
     <ProjectReference Include="..\LibraryManagmentSystem.Domain\LibraryManagmentSystem.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

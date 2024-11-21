@@ -10,7 +10,7 @@ namespace LibraryManagmentSystem.Core.Interfaces.Service
     public interface IAuthService
     {
         Task<AuthModel> RegisterAsync(RegisterModel model);
-        Task<AuthModel> GetTokenAsync(TokenRequestModel model);
+        Task<AuthModel> Login(TokenRequestModel model);
         Task<string> AddRoleAsync(AddRoleModel model);
         Task<AuthModel> RefreshTokenAsync(string token);
         Task<bool> RevokeTokenAsync(string token);

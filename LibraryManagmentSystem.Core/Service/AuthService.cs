@@ -76,7 +76,7 @@ namespace LibraryManagmentSystem.Core.Service
             };
         }
 
-        public async Task<AuthModel> GetTokenAsync(TokenRequestModel model)
+        public async Task<AuthModel> Login(TokenRequestModel model)
         {
             var authModel = new AuthModel();
 

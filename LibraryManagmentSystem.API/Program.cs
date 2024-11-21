@@ -5,6 +5,7 @@ using LibraryManagmentSystem.Core.Interfaces.Repositories;
 using LibraryManagmentSystem.Core.Interfaces.Service;
 using LibraryManagmentSystem.Core.Service;
 using LibraryManagmentSystem.Data.Repositories;
+using LibraryManagmentSystem.Domain.Helper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -35,9 +36,11 @@ namespace LibraryManagmentSystem.API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
             });
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
             #region Authentication
             builder.Services.AddAuthentication(options =>
             {

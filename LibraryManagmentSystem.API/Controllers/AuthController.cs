@@ -32,10 +32,10 @@ namespace LibraryManagmentSystem.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("token")]
-        public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequestModel model)
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] TokenRequestModel model)
         {
-            var result = await _authService.GetTokenAsync(model);
+            var result = await _authService.Login(model);
 
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);

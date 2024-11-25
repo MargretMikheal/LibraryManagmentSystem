@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LibraryManagementSystem.Domain.Models;
 using LibraryManagmentSystem.Domain.DTOs;
+using LibraryManagmentSystem.Domain.DTOs.BookDTOs;
 
 
 namespace LibraryManagmentSystem.Domain.Helper
@@ -9,12 +10,18 @@ namespace LibraryManagmentSystem.Domain.Helper
     {
         public MappingProfile()
         {
-            // Map ApplicationUser to UserDto for getting user information
             CreateMap<ApplicationUser, UserDto>();
 
-            // Map UpdateUserDto to ApplicationUser, handling ProfilePicture separately
             CreateMap<UpdateUserDto, ApplicationUser>()
                 .ForMember(dest => dest.ProfilePicture, opt => opt.Ignore()) // ProfilePicture is handled manually
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<Book, BookDto>()
+            .ForMember(dest => dest.GenreName, opt => opt.MapFrom(src => src.Genre.Name));
+
+            CreateMap<AddBookDto, Book>();
+
+            CreateMap<UpdateBookDto, Book>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
         }
     }

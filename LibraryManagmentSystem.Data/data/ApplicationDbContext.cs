@@ -74,6 +74,10 @@ namespace LibraryManagementSystem.Data
                 .WithOne(f => f.User)
                 .HasForeignKey(f => f.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Genre>()
+                .HasIndex(g => g.Name)
+                .IsUnique();
         }
     }
 }

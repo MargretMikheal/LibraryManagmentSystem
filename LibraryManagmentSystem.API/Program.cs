@@ -36,6 +36,7 @@ namespace LibraryManagmentSystem.API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
             });
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IGenreService, GenreService>();
             builder.Services.AddScoped<IBookService, BookService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

@@ -2,6 +2,7 @@
 using LibraryManagementSystem.Domain.Models;
 using LibraryManagmentSystem.Domain.DTOs;
 using LibraryManagmentSystem.Domain.DTOs.BookDTOs;
+using LibraryManagmentSystem.Domain.DTOs.GenreDtos;
 
 
 namespace LibraryManagmentSystem.Domain.Helper
@@ -23,6 +24,9 @@ namespace LibraryManagmentSystem.Domain.Helper
 
             CreateMap<UpdateBookDto, Book>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+            
+            CreateMap<Genre,GetGenreDto>().ReverseMap();
+            CreateMap<GenreDto, Genre>();
         }
     }
 }

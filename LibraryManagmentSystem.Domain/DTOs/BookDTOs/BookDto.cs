@@ -11,5 +11,7 @@ namespace LibraryManagmentSystem.Domain.DTOs.BookDTOs
     {
         public int Id { get; set; }
         public string GenreName { get; set; }
+        public int CopiesAvailable { get; set; }
+
     }
 }

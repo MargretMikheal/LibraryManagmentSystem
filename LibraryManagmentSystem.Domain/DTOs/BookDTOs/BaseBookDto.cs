@@ -17,7 +17,6 @@ namespace LibraryManagmentSystem.Domain.DTOs.BookDTOs
         public DateTime PublicationDate { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "Copies available cannot be negative.")]
-        public int CopiesAvailable { get; set; }
         public int GenreId { get; set; }
     }
 }

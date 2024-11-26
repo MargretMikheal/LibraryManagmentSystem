@@ -21,7 +21,17 @@ namespace LibraryManagmentSystem.Core.Service
         public async Task<ServiceResponse<List<BookDto>>> GetAllBooksAsync()
         {
             var books = await _unitOfWork.Books.GetAllWithIncludesAsync(b => b.Genre);
-            var bookDtos = _mapper.Map<List<BookDto>>(books);
+            var inventories = await _unitOfWork.Inventory.GetAllAsync();
+
+            var bookDtos = books.Select(book =>
+            {
+                var availableCopies = inventories.FirstOrDefault(inv => inv.BookId == book.Id)?.AvailableCopies ?? 0;
+
+                var bookDto = _mapper.Map<BookDto>(book);
+                bookDto.CopiesAvailable = availableCopies;
+
+                return bookDto;
+            }).ToList();
 
             return new ServiceResponse<List<BookDto>>
             {
@@ -30,6 +40,7 @@ namespace LibraryManagmentSystem.Core.Service
                 Message = bookDtos.Count > 0 ? "Books retrieved successfully." : "No books found."
             };
         }
+
 
         public async Task<ServiceResponse<BookDto>> GetBookByIdAsync(int id)
         {
@@ -43,7 +54,12 @@ namespace LibraryManagmentSystem.Core.Service
                 };
             }
 
+            var inventory = await _unitOfWork.Inventory.FirstOrDefaultAsync(inv => inv.BookId == id);
+            var availableCopies = inventory?.AvailableCopies ?? 0;
+
             var bookDto = _mapper.Map<BookDto>(book);
+            bookDto.CopiesAvailable = availableCopies;
+
             return new ServiceResponse<BookDto>
             {
                 Success = true,
@@ -52,9 +68,9 @@ namespace LibraryManagmentSystem.Core.Service
             };
         }
 
+
         public async Task<ServiceResponse<List<BookDto>>> GetBooksByGenreAsync(int genreId)
         {
-            // Check if the genre exists
             var genre = await _unitOfWork.Genres.GetByIdAsync(genreId);
             if (genre == null)
             {
@@ -65,9 +81,18 @@ namespace LibraryManagmentSystem.Core.Service
                 };
             }
 
-            // Retrieve books for the genre
             var books = await _unitOfWork.Books.GetAllAsync(b => b.GenreId == genreId, includes: b => b.Genre);
-            var bookDtos = _mapper.Map<List<BookDto>>(books);
+            var inventories = await _unitOfWork.Inventory.GetAllAsync();
+
+            var bookDtos = books.Select(book =>
+            {
+                var availableCopies = inventories.FirstOrDefault(inv => inv.BookId == book.Id)?.AvailableCopies ?? 0;
+
+                var bookDto = _mapper.Map<BookDto>(book);
+                bookDto.CopiesAvailable = availableCopies;
+
+                return bookDto;
+            }).ToList();
 
             return new ServiceResponse<List<BookDto>>
             {
@@ -79,6 +104,7 @@ namespace LibraryManagmentSystem.Core.Service
             };
         }
 
+
         public async Task<ServiceResponse<BookDto>> AddBookAsync(AddBookDto addBookDto)
         {
             var genre = await _unitOfWork.Genres.GetByIdAsync(addBookDto.GenreId);
@@ -87,7 +113,7 @@ namespace LibraryManagmentSystem.Core.Service
                 return new ServiceResponse<BookDto>
                 {
                     Success = false,
-                    Message = "The specified Genre does not exist."
+                    Message = "The specified genre does not exist."
                 };
             }
 
@@ -104,7 +130,18 @@ namespace LibraryManagmentSystem.Core.Service
 
             var book = _mapper.Map<Book>(addBookDto);
 
+            // Add book and save changes to generate its ID
             await _unitOfWork.Books.AddAsync(book);
+            await _unitOfWork.SaveChangesAsync();
+
+            // Create inventory for the new book
+            var inventory = new Inventory
+            {
+                BookId = book.Id,
+                TotalCopies = addBookDto.TotalCopies,
+                AvailableCopies = addBookDto.TotalCopies
+            };
+            await _unitOfWork.Inventory.AddAsync(inventory);
             await _unitOfWork.SaveChangesAsync();
 
             var bookDto = _mapper.Map<BookDto>(book);
@@ -112,10 +149,11 @@ namespace LibraryManagmentSystem.Core.Service
             return new ServiceResponse<BookDto>
             {
                 Success = true,
-                Message = "Book added successfully.",
+                Message = "Book and inventory added successfully.",
                 Data = bookDto
             };
         }
+
 
         public async Task<ServiceResponse<BookDto>> UpdateBookAsync(int id, UpdateBookDto updateBookDto)
         {

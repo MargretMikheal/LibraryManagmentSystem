@@ -9,6 +9,6 @@ namespace LibraryManagmentSystem.Domain.DTOs.BookDTOs
 {
     public class AddBookDto:BaseBookDto 
     {
-       
+       public int TotalCopies { get; set; }
     }
 }

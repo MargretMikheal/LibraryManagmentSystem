@@ -1,3 +1,4 @@
+using LibraryManagementSystem.Core.Service;
 using LibraryManagementSystem.Data;
 using LibraryManagementSystem.Domain.Helper;
 using LibraryManagementSystem.Domain.Models;
@@ -39,6 +40,7 @@ namespace LibraryManagmentSystem.API
             builder.Services.AddScoped<IGenreService, GenreService>();
             builder.Services.AddScoped<IBookService, BookService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IBorrowingService, BorrowingService>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

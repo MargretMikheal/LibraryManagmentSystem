@@ -2,6 +2,7 @@
 using LibraryManagementSystem.Domain.Models;
 using LibraryManagmentSystem.Domain.DTOs;
 using LibraryManagmentSystem.Domain.DTOs.BookDTOs;
+using LibraryManagmentSystem.Domain.DTOs.BorrowingDTos;
 using LibraryManagmentSystem.Domain.DTOs.GenreDtos;
 
 
@@ -27,6 +28,10 @@ namespace LibraryManagmentSystem.Domain.Helper
             
             CreateMap<Genre,GetGenreDto>().ReverseMap();
             CreateMap<GenreDto, Genre>();
+
+            CreateMap<Borrowing, BorrowingDto>()
+                .ForMember(dest => dest.BookTitle, opt => opt.MapFrom(src => src.Book.Title));
+            CreateMap<CreateBorrowingDto, Borrowing>();
         }
     }
 }

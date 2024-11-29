@@ -1,4 +1,4 @@
-﻿using LibraryManagmentSystem.Domain.DTOs;
+﻿using LibraryManagmentSystem.Domain.DTOs.UserDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;

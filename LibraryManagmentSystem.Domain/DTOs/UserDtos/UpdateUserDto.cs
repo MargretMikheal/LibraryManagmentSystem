@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 
 
-namespace LibraryManagmentSystem.Domain.DTOs
+namespace LibraryManagmentSystem.Domain.DTOs.UserDtos
 {
     public class UpdateUserDto
     {

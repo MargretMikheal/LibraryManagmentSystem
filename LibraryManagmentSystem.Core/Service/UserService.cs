@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using LibraryManagementSystem.Domain.Models;
 using LibraryManagmentSystem.Core.Interfaces.Service;
-using LibraryManagmentSystem.Domain.DTOs;
+using LibraryManagmentSystem.Domain.DTOs.UserDtos;
 using Microsoft.AspNetCore.Identity;
 
 namespace LibraryManagmentSystem.Core.Service

@@ -15,6 +15,7 @@ public class BorrowingsController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAllBorrowings()
     {
         var response = await _borrowingService.GetAllBorrowingsAsync();
@@ -22,6 +23,7 @@ public class BorrowingsController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles ="Admin")]
     public async Task<IActionResult> GetBorrowingById(int id)
     {
         var response = await _borrowingService.GetBorrowingByIdAsync(id);
@@ -29,6 +31,7 @@ public class BorrowingsController : ControllerBase
     }
 
     [HttpGet("user/{userId}")]
+    [Authorize]
     public async Task<IActionResult> GetBorrowingsByUser(string userId)
     {
         var response = await _borrowingService.GetBorrowingsByUserAsync(userId);
@@ -36,7 +39,7 @@ public class BorrowingsController : ControllerBase
     }
 
     [HttpPost]
-    //[Authorize]
+    [Authorize]
     public async Task<IActionResult> CreateBorrowing([FromBody] CreateBorrowingDto createBorrowingDto)
     {
         var response = await _borrowingService.CreateBorrowingAsync(createBorrowingDto);
@@ -44,7 +47,7 @@ public class BorrowingsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    //[Authorize]
+    [Authorize]
     public async Task<IActionResult> ReturnBook(int id)
     {
         var response = await _borrowingService.ReturnBookAsync(id);

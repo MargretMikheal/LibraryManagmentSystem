@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibraryManagmentSystem.Domain.DTOs
+namespace LibraryManagmentSystem.Domain.DTOs.UserDtos
 {
     public class UserDto
     {

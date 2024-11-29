@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using LibraryManagementSystem.Domain.Models;
-using LibraryManagmentSystem.Domain.DTOs;
 using LibraryManagmentSystem.Domain.DTOs.BookDTOs;
 using LibraryManagmentSystem.Domain.DTOs.BorrowingDTos;
+using LibraryManagmentSystem.Domain.DTOs.FineDtos;
 using LibraryManagmentSystem.Domain.DTOs.GenreDtos;
+using LibraryManagmentSystem.Domain.DTOs.UserDtos;
 
 
 namespace LibraryManagmentSystem.Domain.Helper
@@ -32,7 +33,14 @@ namespace LibraryManagmentSystem.Domain.Helper
             CreateMap<Borrowing, BorrowingDto>()
                 .ForMember(dest => dest.BookTitle, opt => opt.MapFrom(src => src.Book.Title));
             CreateMap<CreateBorrowingDto, Borrowing>();
-        }
+
+            
+                CreateMap<Fine, FineDto>().ReverseMap();
+                CreateMap<Fine, FineDetailsDto>()
+                    .ForMember(dest => dest.CreatedAt,
+                               opt => opt.MapFrom(src => src.Borrowing.ReturnedDate));
+           
+    }
     }
 }
 

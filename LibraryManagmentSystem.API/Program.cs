@@ -40,6 +40,7 @@ namespace LibraryManagmentSystem.API
             builder.Services.AddScoped<IGenreService, GenreService>();
             builder.Services.AddScoped<IBookService, BookService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IFineService, FineService>();
             builder.Services.AddScoped<IBorrowingService, BorrowingService>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

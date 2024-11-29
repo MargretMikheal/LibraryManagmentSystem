@@ -1,5 +1,5 @@
 ﻿using LibraryManagmentSystem.Core.Interfaces.Service;
-using LibraryManagmentSystem.Domain.DTOs;
+using LibraryManagmentSystem.Domain.DTOs.UserDtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

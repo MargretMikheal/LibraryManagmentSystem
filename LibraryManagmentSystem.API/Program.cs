@@ -41,6 +41,7 @@ namespace LibraryManagmentSystem.API
             builder.Services.AddScoped<IBookService, BookService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IFineService, FineService>();
+            builder.Services.AddScoped<IInventoryService, InventoryService>();
             builder.Services.AddScoped<IBorrowingService, BorrowingService>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -77,8 +78,8 @@ namespace LibraryManagmentSystem.API
                 swagger.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "ASP.NET 5 Web API",
-                    Description = " ITI Projrcy"
+                    Title = "",
+                    Description = " Library Managment System"
                 });
                 // To Enable authorization using Swagger (JWT)
                 swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()

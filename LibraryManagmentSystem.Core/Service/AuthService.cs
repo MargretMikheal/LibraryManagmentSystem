@@ -16,15 +16,17 @@ namespace LibraryManagmentSystem.Core.Service
     public class AuthService:IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IMailService _mailService;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JWT _jwt;
 
         public AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
-            IOptions<JWT> jwt)
+            IOptions<JWT> jwt, IMailService mailService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _jwt = jwt.Value;
+            _mailService = mailService;
         }
 
         public async Task<AuthModel> RegisterAsync(RegisterModel model)
@@ -131,38 +133,6 @@ namespace LibraryManagmentSystem.Core.Service
             return result.Succeeded ? string.Empty : "Something went wrong";
         }
 
-        private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
-        {
-            var userClaims = await _userManager.GetClaimsAsync(user);
-            var roles = await _userManager.GetRolesAsync(user);
-            var roleClaims = new List<Claim>();
-
-            foreach (var role in roles)
-                roleClaims.Add(new Claim("roles", role));
-
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("uid", user.Id)
-            }
-            .Union(userClaims)
-            .Union(roleClaims);
-
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
-            var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
-
-            var jwtSecurityToken = new JwtSecurityToken(
-                issuer: _jwt.Issuer,
-                audience: _jwt.Audience,
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwt.DurationInMinutes),
-                signingCredentials: signingCredentials);
-
-            return jwtSecurityToken;
-        }
-
         public async Task<AuthModel> RefreshTokenAsync(string RefreshToken)
         {
             var authModel = new AuthModel();
@@ -219,6 +189,89 @@ namespace LibraryManagmentSystem.Core.Service
             await _userManager.UpdateAsync(user);
 
             return true;
+        }
+
+        
+        public async Task<ServiceResponse<string>> ChangePasswordAsync(string userId, ChangePasswordDto changePasswordDto)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return new ServiceResponse<string> { Success = false, Message = "User not found." };
+
+            var result = await _userManager.ChangePasswordAsync(user, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
+
+            if (!result.Succeeded)
+                return new ServiceResponse<string> { Success = false, Message = string.Join(", ", result.Errors.Select(e => e.Description)) };
+
+                return new ServiceResponse<string> { Success = true, Message = "Password changed successfully." };
+        }
+
+        public async Task<ServiceResponse<string>> ForgotPasswordAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return new ServiceResponse<string> { Success = false, Message = "No user associated with this email." };
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            // Generate reset link
+            var resetLink = $"https://yourdomain.com/reset-password?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(email)}";
+            
+            // Send reset link via email
+            await _mailService.SendEmailAsync(email, "Password Reset",
+                $"<p>Click the link below to reset your password:</p><a href='{resetLink}'>{resetLink}</a>");
+
+            return new ServiceResponse<string> { Success = true, Message = "Password reset link sent successfully to your email." };
+        }
+
+        public async Task<ServiceResponse<string>> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
+        {
+            var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
+            if (user == null)
+                return new ServiceResponse<string> { Success = false, Message = "Invalid email address." };
+
+            var result = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                return new ServiceResponse<string> { Success = false, Message = errors };
+            }
+
+            return new ServiceResponse<string> { Success = true, Message = "Password has been reset successfully." };
+        }
+
+
+        private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
+        {
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
+            var roleClaims = new List<Claim>();
+
+            foreach (var role in roles)
+                roleClaims.Add(new Claim("roles", role));
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim("uid", user.Id)
+            }
+            .Union(userClaims)
+            .Union(roleClaims);
+
+            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
+            var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+
+            var jwtSecurityToken = new JwtSecurityToken(
+                issuer: _jwt.Issuer,
+                audience: _jwt.Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(_jwt.DurationInMinutes),
+                signingCredentials: signingCredentials);
+
+            return jwtSecurityToken;
         }
 
         private RefreshToken GenerateRefreshToken()

@@ -106,5 +106,34 @@ namespace LibraryManagmentSystem.API.Controllers
 
             Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = await _authService.ForgotPasswordAsync(model.Email);
+
+            if (!response.Success)
+                return BadRequest(response.Message);
+
+            return Ok(response.Message);
+        }
+
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = await _authService.ResetPasswordAsync(model);
+
+            if (!response.Success)
+                return BadRequest(response.Message);
+
+            return Ok(response.Message);
+        }
     }
 }

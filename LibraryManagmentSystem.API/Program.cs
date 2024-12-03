@@ -29,8 +29,14 @@ namespace LibraryManagmentSystem.API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().
-                AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
+            })
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
@@ -40,6 +46,7 @@ namespace LibraryManagmentSystem.API
             builder.Services.AddScoped<IGenreService, GenreService>();
             builder.Services.AddScoped<IBookService, BookService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddTransient<IMailService, MailService>();
             builder.Services.AddScoped<IFineService, FineService>();
             builder.Services.AddScoped<IInventoryService, InventoryService>();
             builder.Services.AddScoped<IBorrowingService, BorrowingService>();

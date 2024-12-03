@@ -14,6 +14,9 @@ namespace LibraryManagmentSystem.Core.Interfaces.Service
         Task<string> AddRoleAsync(AddRoleModel model);
         Task<AuthModel> RefreshTokenAsync(string token);
         Task<bool> RevokeTokenAsync(string token);
+        Task<ServiceResponse<string>> ChangePasswordAsync(string userId, ChangePasswordDto changePasswordDto);
+        Task<ServiceResponse<string>> ForgotPasswordAsync(string email);
+        Task<ServiceResponse<string>> ResetPasswordAsync(ResetPasswordDto resetPasswordDto);
     }
 
 }
